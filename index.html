@@ -14,11 +14,11 @@
 </head>
 <body>
     <main>
-    <div id="app">
-        <div class="container">
+        <div id="app">
+            <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-md-12">
-
+                        <!-- Input search -->
                         <section class="d-flex align-items-center justify-content-center">
                             <div class="uk-inline">
                                 <span class="uk-form-icon" uk-icon="icon: search"></span>
@@ -45,9 +45,10 @@
                                 </div>
                             </div>
                         </section>
-
+                        <!-- Content -->
                         <section class="mt-5">
-                            <div v-if="searchType === 'keyword'" class="row row-cols-2 row-cols-xl-6 row-cols-lg-5 row-cols-md-4 row-cols-sm-3">
+                            <!-- Search -->
+                            <div v-if="searchType.byKeyword" class="row row-cols-2 row-cols-xl-6 row-cols-lg-5 row-cols-md-4 row-cols-sm-3">
                                 <div v-for="movie in movies" class="col mb-3 p-0">
                                     <div class="card" @click="toggleMovie(movie.imdbID)">
                                         <div class="relative">
@@ -68,16 +69,17 @@
                                     </div>
                                 </div>
                             </div> 
-                            <div v-if="searchType === 'id'" class="row">
+                            <!-- Search by id-->
+                            <div v-if="searchType.byId" class="row">
                                 <div class="col-md-5">
                                     <img v-bind:src=movieById.Poster v-bind:alt=movieById.Title style="height: 550px;" class="img-fluid"/>
                                 </div>
-                                <div class="col-md-7">
-                                    <h1 class="p-0 m-0">{{movieById.Title}}</h1>
-                                    <p class="m-0 p-0 mr-3">  
+                                <div class="col-md-6">
+                                    <h2 class="p-0 m-0">{{movieById.Title}}</h2>
+                                    <h6 class="p-0 m-0">Runtime: <b>{{movieById.Runtime}}</b>  Genre: <b> {{movieById.Genre}}</b></h6>
+                                    <p class="mt-3 m-0 p-0 mr-3">  
                                         <span uk-icon="icon: star"></span> 
                                         {{movieById.Ratings[0].Source}} {{movieById.Ratings[0].Value}}
-
                                     </p>
                                     <div class="d-flex align-items-center">
                                         <p class="m-0 p-0 mr-3">  
@@ -89,38 +91,42 @@
                                             {{movieById.imdbRating}}
                                         </p>
                                     </div>
-                                   <section class="mt-2">
+                                <section class="mt-2">
                                         <h3 class="p-0 m-0"><b>Awards</b> <i class="fas fa-trophy ml-1"></i> </h3>
                                         <p class="m-0 p-0">{{movieById.Awards}}</p>
                                         <h5 class="p-0 m-0 mt-1"><b>Actors</b></h5>
                                         <h5 class="p-0 m-0">{{movieById.Actors}}</h5>
-                                   </section>
-                                   <section class="mt-3">
+                                        <h5 class="p-0 m-0">Directors: {{movieById.Director}}</h5>
+                                </section>
+                                <section class="mt-3">
                                         <h3 class="p-0 m-0"><b>Plot</b></h3>
-                                       <p class="p-0 m-0">{{movieById.Plot}}</p>
-                                       <button class="uk-button uk-button-danger mt-2" @click="navigateToImdb">View imdb</button>
-                                   </section>
+                                    <p class="p-0 m-0">{{movieById.Plot}}</p>
+                                    <button class="uk-button uk-button-danger mt-2" @click="navigateToImdb">View imdb</button>
+                                </section>
                                 <h3 class="mt-3 ml-1 p-0 m-0"><b>Movies you may like</b></h3>
                                 <div class="ml-1 justify-content-start row row-cols-4 row-cols-xl-6 row-cols-lg-5 row-cols-md-4 row-cols-sm-3">
                                     <div v-for="suggested in suggestions" class="col mb-3 p-0">
                                         <div class="card p-1">
-                                            <img v-bind:src=suggested.Poster v-bind:alt=suggested.Title style="height: 140px;" class="img-fluid"/>
+                                            <img v-bind:src=suggested.Poster v-bind:alt=suggested.Title style="height: 130px;" class="img-fluid"/>
                                         </div>
                                     </div>
                                 </div> 
                                 </div>
+                                <div class="col-md-1">
+                                    <span class="pointer" uk-icon="icon: close; ratio: 2"  @click="resetView"></span>
+                                </div>
                             </div>
-
-                            <div v-if="toggleView" class="row">
+                            <!-- Click image-->
+                            <div v-if="toggle.movieInfo" class="row">
                                 <div class="col-md-5">
                                     <img v-bind:src=toggledMovie.Poster v-bind:alt=toggledMovie.Title style="height: 550px;" class="img-fluid"/>
                                 </div>
-                                <div class="col-md-7">
-                                    <h1 class="p-0 m-0">{{toggledMovie.Title}}</h1>
-                                    <p class="m-0 p-0 mr-3">  
+                                <div class="col-md-6">
+                                    <h2 class="p-0 m-0">{{toggledMovie.Title}}</h2>
+                                    <h6 class="p-0 m-0">Runtime: <b>{{movieById.Runtime}}</b>  Genre: <b> {{movieById.Genre}}</b></h6>
+                                    <p class=" mt-3 m-0 p-0 mr-3">  
                                         <span uk-icon="icon: star"></span> 
                                         {{toggledMovie.Ratings[0].Source}} {{toggledMovie.Ratings[0].Value}}
-
                                     </p>
                                     <div class="d-flex align-items-center">
                                         <p class="m-0 p-0 mr-3">  
@@ -132,29 +138,33 @@
                                             {{toggledMovie.imdbRating}}
                                         </p>
                                     </div>
-                                   <section class="mt-2">
+                                <section class="mt-2">
                                         <h3 class="p-0 m-0"><b>Awards</b> <i class="fas fa-trophy ml-1"></i> </h3>
                                         <p class="m-0 p-0">{{toggledMovie.Awards}}</p>
                                         <h5 class="p-0 m-0 mt-1"><b>Actors</b></h5>
                                         <h5 class="p-0 m-0">{{toggledMovie.Actors}}</h5>
-                                   </section>
-                                   <section class="mt-3">
+                                        <h5 class="p-0 m-0">Directors: {{toggledMovie.Director}}</h5>
+
+                                </section>
+                                <section class="mt-3">
                                         <h3 class="p-0 m-0"><b>Plot</b></h3>
-                                       <p class="p-0 m-0">{{toggledMovie.Plot}}</p>
-                                       <button class="uk-button uk-button-danger mt-2" @click="navigateToImdb">View imdb</button>
-                                   </section>
+                                    <p class="p-0 m-0">{{toggledMovie.Plot}}</p>
+                                    <button class="uk-button uk-button-danger mt-2" @click="navigateToImdb">View imdb</button>
+                                </section>
                                 <h3 class="mt-3 ml-1 p-0 m-0"><b>Movies you may like</b></h3>
                                 <div class="ml-1 justify-content-start row row-cols-4 row-cols-xl-6 row-cols-lg-5 row-cols-md-4 row-cols-sm-3">
                                     <div v-for="suggested in suggestions" class="col mb-3 p-0">
                                         <div class="card p-1">
-                                            <img v-bind:src=suggested.Poster v-bind:alt=suggested.Title style="height: 140px;" class="img-fluid"/>
+                                            <img v-bind:src=suggested.Poster v-bind:alt=suggested.Title style="height: 130px;" class="img-fluid"/>
                                         </div>
                                     </div>
                                 </div> 
                                 </div>
+                                <div class="col-md-1">
+                                    <span class="pointer" uk-icon="icon: close; ratio: 2" @click="resetView"></span>
+                                </div>
                             </div>
                         </section>
-
                     </div>
                 </div>
             </div>
@@ -174,21 +184,21 @@
                 toggledMovie: {},
                 suggestions: [],
                 keyword: null,
-                searchType: 'keyword',
-                toggleView: false,
-
+                searchType: {
+                    byKeyword: true,
+                    byId: false
+                },
+                toggle: {
+                    movieInfo: false,
+                },
             },
             methods: {
-                navigateToImdb: function() {
-                    window.location = `https://www.imdb.com/title/${this.movieById.imdbID}/?ref_=nv_sr_srsg_0`;
-                },
                 toggleMovie: async function(value) {
-                    console.log(value);
                     if(value) {
                         await axios.get(`https://www.omdbapi.com/?apikey=52207944&i=${value}`)
                             .then(res => {
-                                this.searchType = null;
-                                this.toggleView = true;
+                                this.searchType = { ...null };
+                                this.toggle.movieInfo = true;
                                 this.toggledMovie = res.data
                             })
                             .catch(err => console.error(err))
@@ -200,7 +210,6 @@
                             })
                             .catch(err => console.error(err))
                     }
-                   
                 },
                 searchKeyword: async function(value, params) {
                     if(!this.keyword) return null;
@@ -209,6 +218,7 @@
                         console.log(`value ${value}`);
                              await axios.get(`https://www.omdbapi.com/?apikey=52207944&i=${this.keyword}`)
                                 .then(res => {
+                                    this.toggleView = false;
                                     this.searchType = 'id';
                                     this.movieById = { ...res.data }
                                 })
@@ -232,6 +242,13 @@
                         default: null            
                     }
                 }
+            },
+            navigateToImdb: function() {
+                    window.location = `https://www.imdb.com/title/${this.movieById.imdbID}/?ref_=nv_sr_srsg_0`;
+            },
+            resetView: function() {
+                    this.searchType = { ...null, byKeyword: true }
+                    this.toggle.movieInfo = false;
             },
             mounted: function() {
                     axios.get(`https://www.omdbapi.com/?apikey=52207944&s=game`)
