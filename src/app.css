@@ -1,0 +1,17 @@
+*, html {
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0px;
+  padding: 0px;
+}
+
+.dropdown__text {
+  font-size: 16px;
+  cursor: pointer;
+}
+.img__style {
+  height: 280px;
+  cursor: pointer;
+}

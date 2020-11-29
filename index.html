@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The OMDb API is a RESTful web service to obtain movie information, all content and images on the site are contributed and maintained by our users.">
+    <link rel="shortcut icon" href="https://cdn.freebiesupply.com/logos/large/2x/hd-logo-png-transparent.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.5.10/dist/css/uikit.min.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+
+    <link rel="stylesheet" href="src/app.css">
+    <title>OMDB</title>
+</head>
+<body>
+    <main>
+    <div id="app">
+        <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-12">
+
+                        <section class="d-flex align-items-center justify-content-center">
+                            <div class="uk-inline">
+                                <span class="uk-form-icon" uk-icon="icon: search"></span>
+                                <input 
+                                    id="inputSearch"
+                                    v-model="keyword"
+                                    v-on:input="searchKeyword(keyword)"
+                                    class="uk-input uk-form-width-large"
+                                    placeholder="Search by Title, Anything or idmbID" 
+                                    type="search">
+                            </div>
+                            <div class="uk-inline">
+                                <button class="uk-button uk-button-primary">
+                                    <div class="d-flex align-items-center">
+                                        <span class="mr-1">search by</span>
+                                        <span uk-icon="icon: chevron-down"></span>
+                                    </div>
+                                </button>
+                                <div uk-dropdown="mode: click;">
+                                    <ul class="uk-nav uk-dropdown-nav">
+                                        <li class="uk-active dropdown__text" @click="searchKeyword(null,'title')">Movie title</li>
+                                        <li class="uk-active dropdown__text" @click="searchKeyword(null,'id')">Movie ID</li>
+                                        <li class="uk-active dropdown__text" @click="searchKeyword(null,'anything')">Anything</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="mt-5">
+                            <div v-if="searchType === 'keyword'" class="row row-cols-2 row-cols-xl-6 row-cols-lg-5 row-cols-md-4 row-cols-sm-3">
+                                <div v-for="movie in movies" class="col mb-3 p-0">
+                                    <div class="card" @click="searchKeyword(movie.imdbID, 'id')">
+                                        <div class="relative">
+                                            <img v-bind:src=movie.Poster v-bind:alt=movie.Title class="img__style">
+                                            <div class="position-absolute ml-2" style="top: 0; ">
+                                                <img src="src/hd.png" alt="" style="height: 50px;">
+                                            </div>
+                                            <div class="position-absolute w-100 p-2" style="bottom: 0; background: rgba(0, 0, 0, 0.5); ">
+                                                <div class="d-flex flex-column">
+                                                    <span class="text-white" style="font-size: 12px;">{{movie.Title}}</span>
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <span class="text-white" style="font-size: 12px;">{{movie.Year}}</span>
+                                                        <span class="text-white text-uppercase font-weight-bold" style="font-size: 12px;">{{movie.Type}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                            <div v-if="searchType === 'id'" class="row">
+                                <div class="col-md-5">
+                                    <img v-bind:src=movieById.Poster v-bind:alt=movieById.Title style="height: 550px;" class="img-fluid"/>
+                                </div>
+                                <div class="col-md-7">
+                                    <h1 class="p-0 m-0">{{movieById.Title}}</h1>
+                                    <p class="m-0 p-0 mr-3">  
+                                        <span uk-icon="icon: star"></span> 
+                                        {{movieById.Ratings[0].Source}} {{movieById.Ratings[0].Value}}
+
+                                    </p>
+                                    <div class="d-flex align-items-center">
+                                        <p class="m-0 p-0 mr-3">  
+                                            <span uk-icon="icon: calendar"></span> 
+                                            {{movieById.Released}}
+                                        </p>
+                                        <p class="m-0 p-0">
+                                            <span uk-icon="icon: star"></span> 
+                                            {{movieById.imdbRating}}
+                                        </p>
+                                    </div>
+                                   <section class="mt-2">
+                                        <h3 class="p-0 m-0"><b>Awards</b> <i class="fas fa-trophy ml-1"></i> </h3>
+                                        <p class="m-0 p-0">{{movieById.Awards}}</p>
+                                        <h5 class="p-0 m-0 mt-1"><b>Actors</b></h5>
+                                        <h5 class="p-0 m-0">{{movieById.Actors}}</h5>
+                                   </section>
+                                   <section class="mt-3">
+                                        <h3 class="p-0 m-0"><b>Plot</b></h3>
+                                       <p class="p-0 m-0">{{movieById.Plot}}</p>
+                                       <button class="uk-button uk-button-danger mt-2" @click="navigateToImdb">View imdb</button>
+                                   </section>
+                                <h3 class="mt-3 ml-1 p-0 m-0"><b>Movies you may like</b></h3>
+                                <div class="ml-1 justify-content-start row row-cols-4 row-cols-xl-6 row-cols-lg-5 row-cols-md-4 row-cols-sm-3">
+                                    <div v-for="suggested in suggestions" class="col mb-3 p-0">
+                                        <div class="card p-1">
+                                            <img v-bind:src=suggested.Poster v-bind:alt=suggested.Title style="height: 140px;" class="img-fluid"/>
+                                        </div>
+                                    </div>
+                                </div> 
+                                </div>
+                            </div>
+                        </section>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.21.0/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.10/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.10/dist/js/uikit-icons.min.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                movies: [],
+                movieById: {},
+                suggestions: [],
+                keyword: null,
+                searchType: 'keyword'
+            },
+            methods: {
+                navigateToImdb: function() {
+                    window.location = `https://www.imdb.com/title/${this.movieById.imdbID}/?ref_=nv_sr_srsg_0`;
+                },
+                searchKeyword: async function(value, params) {
+                    console.log(this.searchType);
+                    if(!this.keyword) return null;
+                    switch(true) {
+                        case params === 'title': 
+                            await axios.get(`http://www.omdbapi.com/?apikey=52207944&t=${this.keyword}`)
+                                .then(res => this.movies = res.data)
+                                .catch(err => console.error(err))
+                            break;
+
+                        case params === 'id': 
+                        console.log(`value ${value}`);
+                             await axios.get(`http://www.omdbapi.com/?apikey=52207944&i=${this.keyword}`)
+                                .then(res => {
+                                    this.searchType = 'id';
+                                    this.movieById = { ...res.data }
+                                })
+                                .catch(err => console.error(err))
+                            await axios.get(`http://www.omdbapi.com/?apikey=52207944&s=${this.movieById.Title}`)
+                                .then(res =>  {
+                                    this.suggestions = res.data.Search.filter((data) => {
+                                        return data.imdbID !== this.movieById.imdbID;
+                                    })
+                                    console.log(this.suggestions);
+                                })
+                                .catch(err => console.error(err))
+                            break;   
+
+                        case params === 'anything': 
+                            this.searchType = 'keyword';
+                            await axios.get(`http://www.omdbapi.com/?apikey=52207944&s=${this.keyword}`)
+                                .then(res => this.movies = res.data.Search)
+                                .catch(err => console.error(err))
+                            break;    
+                        default: null            
+                    }
+                }
+            },
+            mounted: function() {
+                    axios.get(`http://www.omdbapi.com/?apikey=52207944&s=game`)
+                        .then(res =>  this.movies = res.data.Search)
+                        .catch(err => console.error(err))
+            }
+        })
+    
+    </script>
+</body>
+</html>
