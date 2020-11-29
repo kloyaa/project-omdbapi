@@ -228,6 +228,9 @@
         var app = new Vue({
             el: '#app',
             data: {
+                omdbapi: {
+                    baseURL: 'https://www.omdbapi.com/?apikey=52207944'
+                },
                 movies: [],
                 movieById: {},
                 toggledMovie: {},
@@ -244,19 +247,17 @@
             methods: {
                 toggleMovie: async function (value) {
                     if (value) {
-                        await axios.get(`https://www.omdbapi.com/?apikey=52207944&i=${value}`)
+                        await axios.get(`${this.omdbapi.baseURL}&i=${value}`)
                             .then(res => {
                                 this.searchType = { ...null };
-                                this.toggle.movieInfo = true;
+                                this.toggle = { ...this.toggle, movieInfo: true };
                                 this.toggledMovie = res.data
                             })
                             .catch(err => console.error(err))
-                        await axios.get(`https://www.omdbapi.com/?apikey=52207944&s=${this.toggledMovie.Title}`)
-                            .then(res => {
-                                this.suggestions = res.data.Search.filter((data) => {
-                                    return data.imdbID !== this.toggledMovie.imdbID;
-                                })
-                            })
+                        await axios.get(`${this.omdbapi.baseURL}&s=${this.toggledMovie.Title}`)
+                            .then(res => this.suggestions = res.data.Search.filter((data) => {
+                                return data.imdbID !== this.toggledMovie.imdbID;
+                            }))
                             .catch(err => console.error(err))
                     }
                 },
@@ -264,14 +265,14 @@
                     if (this.keyword) {
                         switch (true) {
                             case params === 'id':
-                                await axios.get(`https://www.omdbapi.com/?apikey=52207944&i=${this.keyword}`)
+                                await axios.get(`${this.omdbapi.baseURL}&i=${this.keyword}`)
                                     .then(res => {
                                         this.toggle.movieInfo = false;
                                         this.searchType = { ...null, byId: true }
                                         this.movieById = { ...res.data }
                                     })
                                     .catch(err => console.error(err))
-                                await axios.get(`https://www.omdbapi.com/?apikey=52207944&s=${this.movieById.Title}`)
+                                await axios.get(`${this.omdbapi.baseURL}&s=${this.movieById.Title}`)
                                     .then(res => {
                                         this.suggestions = res.data.Search.filter((data) => {
                                             return data.imdbID !== this.movieById.imdbID;
@@ -281,13 +282,24 @@
                                     .catch(err => console.error(err))
                                 break;
                             case params === 'title':
-                                await axios.get(`https://www.omdbapi.com/?apikey=52207944&s=${this.keyword}`)
-                                    .then(res => this.movies = res.data.Search)
+                                await axios.get(`${this.omdbapi.baseURL}&s=${this.keyword}`)
+                                    .then(res => {
+                                        this.toggle.movieInfo = false;
+                                        this.searchType = { ...null, byKeyword: true }
+                                        this.movies = res.data.Search;
+                                    })
                                     .catch(err => console.error(err))
                                 break;
                             default: null
                         }
                     }
+
+                },
+                loadMovies: async function () {
+                    //Initialize
+                    await axios.get(`${this.omdbapi.baseURL}&s=game`)
+                        .then(res => this.movies = res.data.Search)
+                        .catch(err => console.error(err))
                 },
                 navigateToImdb: function (id) {
                     console.log(id);
@@ -299,9 +311,7 @@
                 },
             },
             mounted: async function () {
-                await axios.get(`https://www.omdbapi.com/?apikey=52207944&s=game`)
-                    .then(res => this.movies = res.data.Search)
-                    .catch(err => console.error(err))
+                await this.loadMovies();
             }
         })
 
