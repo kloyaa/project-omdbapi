@@ -68,47 +68,49 @@
                                     <img v-bind:src=movieById.Poster v-bind:alt=movieById.Title style="height: 550px;" class="img-fluid"/>
                                 </div>
                                 <div class="col-md-6">
-                                    <h2 class="p-0 m-0">{{movieById.Title}}</h2>
-                                    <h6 class="p-0 m-0">Runtime: <b>{{movieById.Runtime}}</b>  Genre: <b> {{movieById.Genre}}</b></h6>
-                                    <p class="mt-3 m-0 p-0 mr-3">  
+                                    <h2 class="r">{{movieById.Title}}</h2>
+                                    <h6 class="r">Runtime: <b>{{movieById.Runtime}}</b>  Genre: <b> {{movieById.Genre}}</b></h6>
+                                    <p class="mt-3 r mr-3">  
                                         <span uk-icon="icon: star"></span> 
                                         {{movieById.Ratings[0].Source}} {{movieById.Ratings[0].Value}}
                                     </p>
                                     <div class="d-flex align-items-center">
-                                        <p class="m-0 p-0 mr-3">  
+                                        <p class="r mr-3">  
                                             <span uk-icon="icon: calendar"></span> 
                                             {{movieById.Released}}
                                         </p>
-                                        <p class="m-0 p-0">
+                                        <p class="r">
                                             <span uk-icon="icon: star"></span> 
                                             {{movieById.imdbRating}}
                                         </p>
                                     </div>
                                 <section class="mt-2">
-                                        <h3 class="p-0 m-0"><b>Awards</b> <i class="fas fa-trophy ml-1"></i> </h3>
-                                        <p class="m-0 p-0">{{movieById.Awards}}</p>
-                                        <h5 class="p-0 m-0 mt-1"><b>Actors</b></h5>
-                                        <h5 class="p-0 m-0">{{movieById.Actors}}</h5>
-                                        <h5 class="p-0 m-0">Directors: {{movieById.Director}}</h5>
+                                        <h3 class="r"><b>Awards</b> <i class="fas fa-trophy ml-1"></i> </h3>
+                                        <p class="r">{{movieById.Awards}}</p>
+                                        <h5 class="r mt-1"><b>Actors</b></h5>
+                                        <h5 class="r">{{movieById.Actors}}</h5>
+                                        <h5 class="r">Directors: {{movieById.Director}}</h5>
                                 </section>
                                 <section class="mt-3">
-                                        <h3 class="p-0 m-0"><b>Plot</b></h3>
-                                    <p class="p-0 m-0">{{movieById.Plot}}</p>
+                                        <h3 class="r"><b>Plot</b></h3>
+                                    <p class="r">{{movieById.Plot}}</p>
                                     <button class="uk-button uk-button-danger mt-2" @click="navigateToImdb">View imdb</button>
                                 </section>
-                                <h3 class="mt-3 ml-1 p-0 m-0"><b>Movies you may like</b></h3>
+                                <h3 class="mt-3 ml-1 r"><b>Movies you may like</b></h3>
                                 <div class="ml-1 justify-content-start row row-cols-4 row-cols-xl-6 row-cols-lg-5 row-cols-md-4 row-cols-sm-3">
-                                    <div v-for="suggested in suggestions" class="col mb-3 p-0">
-                                        <span v-if="suggested.Poster !== 'N/A'" >
-                                            <div class="card p-1">
-                                                <img v-bind:title=suggested.Title v-bind:src=suggested.Poster v-bind:alt=suggested.Title style="height: 130px;" class="img-fluid"/>
-                                            </div>
-                                        </span>    
-                                        <span v-if="suggested.Poster === 'N/A'" >
-                                            <div class="card p-1">
-                                                <img v-bind:title=suggested.Title  src="https://www.tu-chemnitz.de/physik/TPSM/bilder/noimageavailable.png" alt="N/A">
-                                            </div>
-                                        </span> 
+                                    <div v-if="suggestions.length != 0">
+                                        <div v-for="suggested in suggestions" class="col mb-3 p-0">
+                                            <span v-if="suggested.Poster !== 'N/A'" >
+                                                <div class="card p-1">
+                                                    <img v-bind:title=suggested.Title v-bind:src=suggested.Poster v-bind:alt=suggested.Title style="height: 130px;" class="img-fluid"/>
+                                                </div>
+                                            </span>    
+                                            <span v-if="suggested.Poster === 'N/A'" >
+                                                <div class="card p-1">
+                                                    <img v-bind:title=suggested.Title  src="https://www.tu-chemnitz.de/physik/TPSM/bilder/noimageavailable.png" alt="N/A">
+                                                </div>
+                                            </span> 
+                                        </div>
                                     </div>
                                 </div> 
                                 </div>
@@ -120,58 +122,59 @@
                             <div v-if="toggle.movieInfo" class="row">
                                 <div class="col-md-5">
                                     <span v-if="toggledMovie.Poster !== 'N/A'">
-                                        <img  v-bind:src=toggledMovie.Poster v-bind:alt=toggledMovie.Title style="height: 550px;" class="img-fluid"/>
-
+                                        <img @click="toggleMovie(suggested.imdbID)" v-bind:src=toggledMovie.Poster v-bind:alt=toggledMovie.Title style="height: 550px;" class="img-fluid pointer"/>
                                     </span>
                                    <span v-if="toggledMovie.Poster === 'N/A'" >
-                                        <img src="https://www.tu-chemnitz.de/physik/TPSM/bilder/noimageavailable.png" alt="N/A">
+                                        <img @click="toggleMovie(suggested.imdbID)" src="https://www.tu-chemnitz.de/physik/TPSM/bilder/noimageavailable.png"  class="img-fluid pointer" alt="N/A">
                                    </span>
                                 </div>
                                 <div class="col-md-6">
-                                    <h2 class="p-0 m-0">{{toggledMovie.Title}}</h2>
-                                    <h6 class="p-0 m-0">Runtime: <b>{{toggledMovie.Runtime}}</b>  Genre: <b> {{toggledMovie.Genre}}</b></h6>
-                                    <p class=" mt-3 m-0 p-0 mr-3">  
+                                    <h2 class="r">{{toggledMovie.Title}}</h2>
+                                    <h6 class="r">Runtime: <b>{{toggledMovie?.Runtime}}</b>  Genre: <b> {{toggledMovie?.Genre}}</b></h6>
+                                    <p class=" mt-3 r mr-3">  
                                         <span uk-icon="icon: star"></span> 
-                                        {{toggledMovie.Ratings[0].Source}} {{toggledMovie.Ratings[0].Value}}
+                                        {{toggledMovie.Ratings[0]?.Source}} {{toggledMovie.Ratings[0]?.Value}}
                                     </p>
                                     <div class="d-flex align-items-center">
-                                        <p class="m-0 p-0 mr-3">  
+                                        <p class="r mr-3">  
                                             <span uk-icon="icon: calendar"></span> 
-                                            {{toggledMovie.Released}}
+                                            {{toggledMovie?.Released}}
                                         </p>
-                                        <p class="m-0 p-0">
+                                        <p class="r">
                                             <span uk-icon="icon: star"></span> 
-                                            {{toggledMovie.imdbRating}}
+                                            {{toggledMovie?.imdbRating}}
                                         </p>
                                     </div>
                                 <section class="mt-2">
-                                        <h3 class="p-0 m-0"><b>Awards</b> <i class="fas fa-trophy ml-1"></i> </h3>
-                                        <p class="m-0 p-0">{{toggledMovie.Awards}}</p>
-                                        <h5 class="p-0 m-0 mt-1"><b>Actors</b></h5>
-                                        <h5 class="p-0 m-0">{{toggledMovie.Actors}}</h5>
-                                        <h5 class="p-0 m-0">Directors: {{toggledMovie.Director}}</h5>
+                                        <h3 class="r"><b>Awards</b> <i class="fas fa-trophy ml-1"></i> </h3>
+                                        <p class="r">{{toggledMovie?.Awards}}</p>
+                                        <h5 class="r mt-1"><b>Actors</b></h5>
+                                        <h5 class="r">{{toggledMovie?.Actors}}</h5>
+                                        <h5 class="r">Directors: {{toggledMovie?.Director}}</h5>
 
                                 </section>
                                 <section class="mt-3">
-                                        <h3 class="p-0 m-0"><b>Plot</b></h3>
-                                    <p class="p-0 m-0">{{toggledMovie.Plot}}</p>
+                                        <h3 class="r"><b>Plot</b></h3>
+                                    <p class="r">{{toggledMovie?.Plot}}</p>
                                     <button class="uk-button uk-button-danger mt-2" @click="navigateToImdb">View imdb</button>
                                 </section>
-                                <h3 class="mt-3 ml-1 p-0 m-0"><b>Movies you may like</b></h3>
-                                <div class="ml-1 justify-content-start row row-cols-4 row-cols-xl-6 row-cols-lg-5 row-cols-md-4 row-cols-sm-3">
-                                    <div v-for="suggested in suggestions" class="col mb-3 p-0">
-                                        <span v-if="suggested.Poster !== 'N/A'" >
-                                            <div class="card p-1">
-                                                <img v-bind:title=suggested.Title v-bind:src=suggested.Poster v-bind:alt=suggested.Title style="height: 130px;" class="img-fluid"/>
-                                            </div>
-                                        </span>    
-                                        <span v-if="suggested.Poster === 'N/A'" >
-                                            <div class="card p-1">
-                                                <img v-bind:title=suggested.Title  src="https://www.tu-chemnitz.de/physik/TPSM/bilder/noimageavailable.png" alt="N/A">
-                                            </div>
-                                        </span>                                        
-                                    </div>
-                                </div> 
+                                <div v-if="suggestions.length != 0">
+                                    <h3 class="mt-3 ml-1 r"><b>Movies you may like</b></h3>
+                                    <div class="ml-1 justify-content-start row row-cols-4 row-cols-xl-6 row-cols-lg-5 row-cols-md-4 row-cols-sm-3">
+                                        <div v-for="suggested in suggestions" class="col mb-3 p-0">
+                                            <span v-if="suggested.Poster !== 'N/A'" >
+                                                <div class="card p-1">
+                                                    <img @click="toggleMovie(suggested.imdbID)" v-bind:title=suggested.Title v-bind:src=suggested.Poster v-bind:alt=suggested.Title style="height: 130px;" class="img-fluid pointer"/>
+                                                </div>
+                                            </span>    
+                                            <span v-if="suggested.Poster === 'N/A'" >
+                                                <div class="card p-1">
+                                                    <img  @click="toggleMovie(suggested.imdbID)" v-bind:title=suggested.Title  src="https://www.tu-chemnitz.de/physik/TPSM/bilder/noimageavailable.png"  class="img-fluid pointer" alt="N/A">
+                                                </div>
+                                            </span>                                        
+                                        </div>
+                                    </div> 
+                                </div>
                                 </div>
                                 <div class="col-md-1">
                                     <span class="pointer" uk-icon="icon: close; ratio: 2" @click="resetView"></span>

@@ -18,3 +18,7 @@ body {
 .pointer {
   cursor: pointer;
 }
+.r {
+  padding: 0;
+  margin: 0;
+}
