@@ -247,7 +247,6 @@
                                     .catch(err => console.error(err))
                                 break;   
                             case params === 'title': 
-                                this.searchType = 'keyword';
                                 await axios.get(`https://www.omdbapi.com/?apikey=52207944&s=${this.keyword}`)
                                     .then(res => this.movies = res.data.Search)
                                     .catch(err => console.error(err))
