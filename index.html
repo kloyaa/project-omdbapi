@@ -70,12 +70,12 @@
                                 <div class="col-md-6">
                                     <h2 class="m-0 p-0">{{movieById.Title}}</h2>
                                     <h6 class="m-0 p-0">Runtime: <b>{{movieById.Runtime}}</b>  Genre: <b> {{movieById.Genre}}</b></h6>
-                                    <p class="mt-3 r mr-3">  
+                                    <p class="mt-3 m-0 p-0  mr-3">  
                                         <span uk-icon="icon: star"></span> 
                                         {{movieById.Ratings[0].Source}} {{movieById.Ratings[0].Value}}
                                     </p>
                                     <div class="d-flex align-items-center">
-                                        <p class="r mr-3">  
+                                        <p class="m-0 p-0 mr-3">  
                                             <span uk-icon="icon: calendar"></span> 
                                             {{movieById.Released}}
                                         </p>
@@ -96,7 +96,7 @@
                                     <p class="m-0 p-0">{{movieById.Plot}}</p>
                                     <button class="uk-button uk-button-danger mt-2" @click="navigateToImdb">View imdb</button>
                                 </section>
-                                <h3 class="mt-3 ml-1 r"><b>Movies you may like</b></h3>
+                                <h3 class="mt-3 ml-1 m-0 p-0"><b>Movies you may like</b></h3>
                                 <div class="ml-1 justify-content-start row row-cols-4 row-cols-xl-6 row-cols-lg-5 row-cols-md-4 row-cols-sm-3">
                                     <div v-if="suggestions.length != 0">
                                         <div v-for="suggested in suggestions" class="col mb-3 p-0">
@@ -131,12 +131,12 @@
                                 <div class="col-md-6">
                                     <h2 class="m-0 p-0">{{toggledMovie.Title}}</h2>
                                     <h6 class="m-0 p-0">Runtime: <b>{{toggledMovie?.Runtime}}</b>  Genre: <b> {{toggledMovie?.Genre}}</b></h6>
-                                    <p class=" mt-3 r mr-3">  
+                                    <p class=" mt-3 m-0 p-0 mr-3">  
                                         <span uk-icon="icon: star"></span> 
                                         {{toggledMovie.Ratings[0]?.Source}} {{toggledMovie.Ratings[0]?.Value}}
                                     </p>
                                     <div class="d-flex align-items-center">
-                                        <p class="r mr-3">  
+                                        <p class="m-0 p-0 mr-3">  
                                             <span uk-icon="icon: calendar"></span> 
                                             {{toggledMovie?.Released}}
                                         </p>
@@ -148,7 +148,7 @@
                                 <section class="mt-2">
                                         <h3 class="m-0 p-0"><b>Awards</b> <i class="fas fa-trophy ml-1"></i> </h3>
                                         <p class="m-0 p-0">{{toggledMovie?.Awards}}</p>
-                                        <h5 class="r mt-1"><b>Actors</b></h5>
+                                        <h5 class="m-0 p-0 mt-1"><b>Actors</b></h5>
                                         <h5 class="m-0 p-0">{{toggledMovie?.Actors}}</h5>
                                         <h5 class="m-0 p-0">Directors: {{toggledMovie?.Director}}</h5>
                                 </section>
