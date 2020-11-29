@@ -151,12 +151,11 @@
                                         <h5 class="r mt-1"><b>Actors</b></h5>
                                         <h5 class="r">{{toggledMovie?.Actors}}</h5>
                                         <h5 class="r">Directors: {{toggledMovie?.Director}}</h5>
-
                                 </section>
                                 <section class="mt-3">
                                         <h3 class="r"><b>Plot</b></h3>
                                     <p class="r">{{toggledMovie?.Plot}}</p>
-                                    <button class="uk-button uk-button-danger mt-2" @click="navigateToImdb">View imdb</button>
+                                    <button class="uk-button uk-button-danger mt-2" @click="navigateToImdb(toggledMovie.imdbID)">View imdb</button>
                                 </section>
                                 <div v-if="suggestions.length != 0">
                                     <h3 class="mt-3 ml-1 r"><b>Movies you may like</b></h3>
@@ -187,7 +186,7 @@
         </div>
     </div>
     </main>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@0.21.0/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.10/dist/js/uikit.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.10/dist/js/uikit-icons.min.js"></script>
@@ -257,8 +256,8 @@
                         } 
                     }
                 },
-                navigateToImdb: function() {
-                    window.location = `https://www.imdb.com/title/${this.movieById.imdbID}/?ref_=nv_sr_srsg_0`;
+                navigateToImdb: function(id) {
+                    window.location = `https://www.imdb.com/title/${id}/?ref_=nv_sr_srsg_0`;
                 },
                 resetView: function() {
                     this.searchType = { ...null, byKeyword: true }
