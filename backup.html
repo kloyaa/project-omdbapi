@@ -254,7 +254,7 @@
             data: {
                 omdbapi: {
                     baseURL: 'https://www.omdbapi.com/?apikey=52207944',
-                    pageCount: 2
+                    pageCount: 1
                 },
                 movies: [],
                 movieById: {},
@@ -278,7 +278,7 @@
                                 this.toggle = { ...this.toggle, movieInfo: true };
                                 this.toggledMovie = res.data;
                             })
-                            .catch(err => console.error(err))
+                            .catch(err => console.error(err));
                         await axios.get(`${this.omdbapi.baseURL}&s=${this.toggledMovie.Title}`)
                             .then(res => this.suggestions = res.data.Search.filter((data) => {
                                 return data.imdbID !== this.toggledMovie.imdbID;
@@ -296,7 +296,7 @@
                                         this.searchType = { ...null, byId: true };
                                         this.movieById = { ...res.data };
                                     })
-                                    .catch(err => console.error(err))
+                                    .catch(err => console.error(err));
                                 await axios.get(`${this.omdbapi.baseURL}&s=${this.movieById.Title}`)
                                     .then(res => this.suggestions = res.data.Search.filter((data) => {
                                         return data.imdbID !== this.movieById.imdbID;
@@ -321,8 +321,9 @@
                     this.loadMovies();
                 },
                 loadMovies: async function () {
+                    let appendKeyword = `${this.keyword ? this.keyword : 'game'}`;
                     await axios.get(`${this.omdbapi.baseURL}&s=game`)
-                        .then(res => axios.get(`${this.omdbapi.baseURL}&s=game&page=${this.omdbapi.pageCount}`)
+                        .then(res => axios.get(`${this.omdbapi.baseURL}&s=${appendKeyword}&page=${this.omdbapi.pageCount}`)
                             .then(res => res.data.Search?.map(data => this.movies.push(data)))
                             .catch(err => console.error(err)
                             ))
