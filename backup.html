@@ -45,10 +45,12 @@
                                 </div>
                             </div>
                         </section>
+
                         <!-- Content -->
                         <section class="mt-5">
                             <!-- Search -->
-                            <div v-if="searchType.byKeyword"
+                            <section   v-if="searchType.byKeyword">
+                                <div
                                 class="row row-cols-2 row-cols-xl-6 row-cols-lg-5 row-cols-md-4 row-cols-sm-3">
                                 <div v-for="movie in movies" class="col mb-3 p-0">
                                     <div class="card" @click="toggleMovie(movie.imdbID)">
@@ -81,6 +83,15 @@
                                     </div>
                                 </div>
                             </div>
+                            <section class="d-flex align-items-center justify-content-center mt-3 mb-5">
+                               <button class="uk-button uk-button-default" @click="updateMovieCount('increment')">
+                                   <div class="d-flex align-items-center">
+                                    <span>load more</span>
+                                    <span uk-icon="icon: chevron-down"></span>
+                                   </div>
+                               </button>
+                            </section>
+                            </section>
                             <!-- Search by id-->
                             <div v-if="searchType.byId" class="row">
                                 <div class="col-md-5">
@@ -242,7 +253,8 @@
             el: '#app',
             data: {
                 omdbapi: {
-                    baseURL: 'https://www.omdbapi.com/?apikey=52207944'
+                    baseURL: 'https://www.omdbapi.com/?apikey=52207944',
+                    pageCount: 2
                 },
                 movies: [],
                 movieById: {},
@@ -264,14 +276,14 @@
                             .then(res => {
                                 this.searchType = { ...null };
                                 this.toggle = { ...this.toggle, movieInfo: true };
-                                this.toggledMovie = res.data
+                                this.toggledMovie = res.data;
                             })
                             .catch(err => console.error(err))
                         await axios.get(`${this.omdbapi.baseURL}&s=${this.toggledMovie.Title}`)
                             .then(res => this.suggestions = res.data.Search.filter((data) => {
                                 return data.imdbID !== this.toggledMovie.imdbID;
                             }))
-                            .catch(err => console.error(err))
+                            .catch(err => console.error(err));
                     }
                 },
                 searchKeyword: async function (params) {
@@ -281,45 +293,54 @@
                                 await axios.get(`${this.omdbapi.baseURL}&i=${this.keyword}`)
                                     .then(res => {
                                         this.toggle.movieInfo = false;
-                                        this.searchType = { ...null, byId: true }
-                                        this.movieById = { ...res.data }
+                                        this.searchType = { ...null, byId: true };
+                                        this.movieById = { ...res.data };
                                     })
                                     .catch(err => console.error(err))
                                 await axios.get(`${this.omdbapi.baseURL}&s=${this.movieById.Title}`)
-                                    .then(res => {
-                                        this.suggestions = res.data.Search.filter((data) => {
+                                    .then(res => this.suggestions = res.data.Search.filter((data) => {
                                             return data.imdbID !== this.movieById.imdbID;
-                                        })
-                                        console.log(this.suggestions);
-                                    })
-                                    .catch(err => console.error(err))
+                                    }))
+                                    .catch(err => console.error(err));
                                 break;
                             case params === 'title':
                                 await axios.get(`${this.omdbapi.baseURL}&s=${this.keyword}`)
                                     .then(res => {
                                         this.toggle.movieInfo = false;
-                                        this.searchType = { ...null, byKeyword: true }
+                                        this.searchType = { ...null, byKeyword: true };
                                         this.movies = res.data.Search;
                                     })
-                                    .catch(err => console.error(err))
+                                    .catch(err => console.error(err));
                                 break;
                             default: null
                         }
                     }
-
+                },
+                updateMovieCount: function(type) {
+                    
+                    if(type === 'increment') {
+                        this.omdbapi.pageCount += 1;
+                    }
+                    this.loadMovies();
+                    console.log(this.omdbapi.pageCount);
                 },
                 loadMovies: async function () {
                     //Initialize
                     await axios.get(`${this.omdbapi.baseURL}&s=game`)
-                        .then(res => this.movies = res.data.Search)
-                        .catch(err => console.error(err))
+                        .then(res => {
+                                for(i = 0; i < this.omdbapi.pageCount; i++) {
+                                    axios.get(`${this.omdbapi.baseURL}&s=game&page=${i}`)
+                                    .then(res =>  res.data.Search?.map(data => this.movies.push(data)))
+                                    .catch(err => console.error(err))
+                                }
+                            })
+                        .catch(err => console.error(err));
                 },
                 navigateToImdb: function (id) {
-                    console.log(id);
                     window.location = `https://www.imdb.com/title/${id}`;
                 },
                 resetView: function () {
-                    this.searchType = { ...null, byKeyword: true }
+                    this.searchType = { ...null, byKeyword: true };
                     this.toggle.movieInfo = false;
                 },
             },
@@ -327,7 +348,6 @@
                 await this.loadMovies();
             }
         })
-
     </script>
 </body>
 
