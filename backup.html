@@ -49,48 +49,48 @@
                         <!-- Content -->
                         <section class="mt-5">
                             <!-- Search -->
-                            <section   v-if="searchType.byKeyword">
-                                <div
-                                class="row row-cols-2 row-cols-xl-6 row-cols-lg-5 row-cols-md-4 row-cols-sm-3">
-                                <div v-for="movie in movies" class="col mb-3 p-0">
-                                    <div class="card" @click="toggleMovie(movie.imdbID)">
-                                        <div class="relative">
-                                            <span v-if="movie.Poster !== 'N/A'">
-                                                <img v-bind:src=movie.Poster v-bind:alt=movie.Title class="img__style">
-                                                <div class="position-absolute ml-2" style="top: 0; ">
-                                                    <img src="src/hd.png" alt="" style="height: 50px;">
-                                                </div>
-                                            </span>
-                                            <span v-if="movie.Poster === 'N/A'">
-                                                <img src="https://www.tu-chemnitz.de/physik/TPSM/bilder/noimageavailable.png"
-                                                    v-bind:alt=movie.Title class="img__style" />
-                                            </span>
+                            <section v-if="searchType.byKeyword">
+                                <div class="row row-cols-2 row-cols-xl-6 row-cols-lg-5 row-cols-md-4 row-cols-sm-3">
+                                    <div v-for="movie in movies" class="col mb-3 p-0">
+                                        <div class="card" @click="toggleMovie(movie.imdbID)">
+                                            <div class="relative">
+                                                <span v-if="movie.Poster !== 'N/A'">
+                                                    <img v-bind:src=movie.Poster v-bind:alt=movie.Title
+                                                        class="img__style">
+                                                    <div class="position-absolute ml-2" style="top: 0; ">
+                                                        <img src="src/hd.png" alt="" style="height: 50px;">
+                                                    </div>
+                                                </span>
+                                                <span v-if="movie.Poster === 'N/A'">
+                                                    <img src="https://www.tu-chemnitz.de/physik/TPSM/bilder/noimageavailable.png"
+                                                        v-bind:alt=movie.Title class="img__style" />
+                                                </span>
 
-                                            <div class="position-absolute w-100 p-2"
-                                                style="bottom: 0; background: rgba(0, 0, 0, 0.5); ">
-                                                <div class="d-flex flex-column">
-                                                    <span class="text-white"
-                                                        style="font-size: 12px;">{{movie.Title}}</span>
-                                                    <div class="d-flex align-items-center justify-content-between">
+                                                <div class="position-absolute w-100 p-2"
+                                                    style="bottom: 0; background: rgba(0, 0, 0, 0.5); ">
+                                                    <div class="d-flex flex-column">
                                                         <span class="text-white"
-                                                            style="font-size: 12px;">{{movie.Year}}</span>
-                                                        <span class="text-white text-uppercase font-weight-bold"
-                                                            style="font-size: 12px;">{{movie.Type}}</span>
+                                                            style="font-size: 12px;">{{movie.Title}}</span>
+                                                        <div class="d-flex align-items-center justify-content-between">
+                                                            <span class="text-white"
+                                                                style="font-size: 12px;">{{movie.Year}}</span>
+                                                            <span class="text-white text-uppercase font-weight-bold"
+                                                                style="font-size: 12px;">{{movie.Type}}</span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <section class="d-flex align-items-center justify-content-center mt-3 mb-5">
-                               <button class="uk-button uk-button-default" @click="updateMovieCount('increment')">
-                                   <div class="d-flex align-items-center">
-                                    <span>load more</span>
-                                    <span uk-icon="icon: chevron-down"></span>
-                                   </div>
-                               </button>
-                            </section>
+                                <section class="d-flex align-items-center justify-content-center mt-3 mb-5">
+                                    <button class="uk-button uk-button-default" @click="updateMovieCount('increment')">
+                                        <div class="d-flex align-items-center">
+                                            <span>load more</span>
+                                            <span uk-icon="icon: chevron-down"></span>
+                                        </div>
+                                    </button>
+                                </section>
                             </section>
                             <!-- Search by id-->
                             <div v-if="searchType.byId" class="row">
@@ -299,7 +299,7 @@
                                     .catch(err => console.error(err))
                                 await axios.get(`${this.omdbapi.baseURL}&s=${this.movieById.Title}`)
                                     .then(res => this.suggestions = res.data.Search.filter((data) => {
-                                            return data.imdbID !== this.movieById.imdbID;
+                                        return data.imdbID !== this.movieById.imdbID;
                                     }))
                                     .catch(err => console.error(err));
                                 break;
@@ -316,24 +316,16 @@
                         }
                     }
                 },
-                updateMovieCount: function(type) {
-                    
-                    if(type === 'increment') {
-                        this.omdbapi.pageCount += 1;
-                    }
+                updateMovieCount: function (type) {
+                    if (type === 'increment') this.omdbapi.pageCount += 1;
                     this.loadMovies();
-                    console.log(this.omdbapi.pageCount);
                 },
                 loadMovies: async function () {
-                    //Initialize
                     await axios.get(`${this.omdbapi.baseURL}&s=game`)
-                        .then(res => {
-                                for(i = 0; i < this.omdbapi.pageCount; i++) {
-                                    axios.get(`${this.omdbapi.baseURL}&s=game&page=${i}`)
-                                    .then(res =>  res.data.Search?.map(data => this.movies.push(data)))
-                                    .catch(err => console.error(err))
-                                }
-                            })
+                        .then(res => axios.get(`${this.omdbapi.baseURL}&s=game&page=${this.omdbapi.pageCount}`)
+                            .then(res => res.data.Search?.map(data => this.movies.push(data)))
+                            .catch(err => console.error(err)
+                            ))
                         .catch(err => console.error(err));
                 },
                 navigateToImdb: function (id) {
