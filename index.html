@@ -39,7 +39,6 @@
                                 </button>
                                 <div uk-dropdown="mode: click;">
                                     <ul class="uk-nav uk-dropdown-nav">
-                                        <li class="uk-active dropdown__text" @click="searchKeyword(null,'title')">Movie title</li>
                                         <li class="uk-active dropdown__text" @click="searchKeyword(null,'id')">Movie ID</li>
                                         <li class="uk-active dropdown__text" @click="searchKeyword(null,'anything')">Anything</li>
                                     </ul>
@@ -138,24 +137,17 @@
                     window.location = `https://www.imdb.com/title/${this.movieById.imdbID}/?ref_=nv_sr_srsg_0`;
                 },
                 searchKeyword: async function(value, params) {
-                    console.log(this.searchType);
                     if(!this.keyword) return null;
                     switch(true) {
-                        case params === 'title': 
-                            await axios.get(`http://www.omdbapi.com/?apikey=52207944&t=${this.keyword}`)
-                                .then(res => this.movies = res.data)
-                                .catch(err => console.error(err))
-                            break;
-
                         case params === 'id': 
                         console.log(`value ${value}`);
-                             await axios.get(`http://www.omdbapi.com/?apikey=52207944&i=${this.keyword}`)
+                             await axios.get(`https://www.omdbapi.com/?apikey=52207944&i=${this.keyword}`)
                                 .then(res => {
                                     this.searchType = 'id';
                                     this.movieById = { ...res.data }
                                 })
                                 .catch(err => console.error(err))
-                            await axios.get(`http://www.omdbapi.com/?apikey=52207944&s=${this.movieById.Title}`)
+                            await axios.get(`https://www.omdbapi.com/?apikey=52207944&s=${this.movieById.Title}`)
                                 .then(res =>  {
                                     this.suggestions = res.data.Search.filter((data) => {
                                         return data.imdbID !== this.movieById.imdbID;
@@ -167,7 +159,7 @@
 
                         case params === 'anything': 
                             this.searchType = 'keyword';
-                            await axios.get(`http://www.omdbapi.com/?apikey=52207944&s=${this.keyword}`)
+                            await axios.get(`https://www.omdbapi.com/?apikey=52207944&s=${this.keyword}`)
                                 .then(res => this.movies = res.data.Search)
                                 .catch(err => console.error(err))
                             break;    
@@ -176,7 +168,7 @@
                 }
             },
             mounted: function() {
-                    axios.get(`http://www.omdbapi.com/?apikey=52207944&s=game`)
+                    axios.get(`https://www.omdbapi.com/?apikey=52207944&s=game`)
                         .then(res =>  this.movies = res.data.Search)
                         .catch(err => console.error(err))
             }
